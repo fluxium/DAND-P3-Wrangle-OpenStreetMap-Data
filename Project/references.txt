@@ -1,0 +1,15 @@
+http://stackoverflow.com/questions/3294889/iterating-over-dictionaries-using-for-loops-in-python
+
+http://stackoverflow.com/questions/3543559/python-regex-match-and-replace
+
+# how to create IPython internal navigation (TOC)
+http://spartanideas.msu.edu/2014/05/20/creating-a-table-of-contents-with-internal-links-in-ipython-notebooks-and-markdown-documents/#bottom
+
+https://wiki.openstreetmap.org/wiki/OSM_XML
+
+http://docs.mongodb.org/master/reference/program/mongoimport/
+
+http://api.mongodb.org/python/current/tutorial.html
+
+http://stackoverflow.com/questions/3483318/performing-regex-queries-with-pymongo
+

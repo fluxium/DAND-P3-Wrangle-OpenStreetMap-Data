@@ -1,0 +1,20 @@
+{
+  "node_type": "relation",
+  "created": { "..." : "..."},
+  "name": "Crowchild Trail NW",
+  "members" : [
+      {
+        "type": "way",
+        "ref": "127291338",
+        "role": "inner"
+      },
+      {
+        "type": "way",
+        "ref": "127291344",
+        "role": "inner"
+      },
+      { "..." :  "..."}
+    ],
+"type" : "multipolygon",
+"waterway" : "riverbank"
+}

@@ -1,0 +1,11 @@
+https://mapzen.com/data/metro-extracts
+
+Search feild near the middle of that page was used to find the Calgary Metro Extract.
+
+A sample of this area is located at "./calgary_canada_sample.osm"
+
+The Map Zen extract includes all of the City of Calgary region as well as many of the surrouding towns
+and suburbs.
+
+This area was chosen because it is the area that I live in. I have a decent level of familliarity with the
+area and the local language which improves my abilbity to accurately wrangle these map data.

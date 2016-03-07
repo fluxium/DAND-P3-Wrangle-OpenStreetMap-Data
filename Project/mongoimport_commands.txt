@@ -1,0 +1,1 @@
+mongoimport.exe --db osm --file c:\data\import\calgary_canada_osm.json --drop
