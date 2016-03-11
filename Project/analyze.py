@@ -26,19 +26,33 @@ def make_pipeline():
                 }           
                 ]
     return pipeline
-    
-def postal_pipeline():
-    pipeline = [
+
+def user_pipeline():
+    pipeline = [ 
                     {
-                        '$project' : {
-                                        'postal_code' : '$address.postcode',
-                                        'size' : '$address.postcode.length'
-                                      }
+                        '$group' : {
+                                        '_id' : '$created.user', 
+                                        'count' : { '$sum' : 1}
+                                   }
                     },
-                    {'$match' : {'size' : { '$gt' : 5}}}
+                    {
+                        '$sort' : { 'count' : -1 }                    
+                    }
                 ]
     return pipeline
 
+def get_users(cursor):
+    users = []
+    for d in docs:
+        users.append(d)
+    return users
+
+# This function was replaced with '$sort' : { 'count' : -1 } in pipeline
+def sort_users(users, key):
+    from operator import itemgetter
+    sorted_users = sorted(users, key=itemgetter(key), reverse = True)
+    return sorted_users
+    
 def get_all_docs(db):
     return db.DANDP3.find()
 
@@ -58,9 +72,34 @@ def get_largest_doc(results):
     return (max_doc_len, max_doc)
 
 db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
-#pipeline = make_pipeline()
-#result = aggregate(db, pipeline)
-#print db.calgary_canada_osm.count()
-#print get_largest_doc(get_all_docs(db))
+all_docs = get_all_docs(db)
 
-docs = db.DANDP3.aggregate(make_pipeline())
+# Number of Documents, 863038
+print 'Number of Documents: ' + str(db.DANDP3.count())
+
+# Largest Document, (112886)
+# This is computationally intensive 
+#print 'Largest Document: ' + get_largest_doc(all_docs)
+
+docs = aggregate(db, user_pipeline())
+users = get_users(docs)
+
+# Number of Unique Users
+print 'Number of Unique Users: ' + len(users)
+
+# Top Three Contributors
+print 'Top Three Contributors: ' + str(users[0:3])
+
+# Rank of My Contributions
+mb_rank = 1
+for u in users:
+    if u['_id'] == 'MahlonBarrault':
+        break
+    mb_rank += 1
+print 'My Rank: ' + str(mb_rank)
+
+# Number of Ways
+print 'Number of Ways: ' + str(db.DANDP3.find({"node_type":"way"}).count())
+
+# Number of Nodes
+print 'Number of Nodes: ' + str(db.DANDP3.find({"node_type":"node"}).count())

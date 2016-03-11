@@ -80,3 +80,12 @@ for d in result:
     audit_street_type(street_types, d['address']['street'], d['_id'])
     
 pprint.pprint(dict(street_types))
+
+# http://stackoverflow.com/questions/29577713/string-field-value-length-in-mongodb
+db.DANDP3.find({'address.postcode' : {'$exists': 'true'}, '$where' : "this.address.postcode.length < 7"})
+bad_postcode_docs = db.DANDP3.find({'address.postcode' : {'$exists': 'true', '$not' : re.compile('^([A-Z]\d[A-Z]( )\d[A-Z]\d)$')}})
+
+update_postcode = []
+
+for d in bad_postcode_docs:
+    update_postcode.append(d['id'])

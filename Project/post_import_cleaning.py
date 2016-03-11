@@ -21,18 +21,18 @@ def get_db(db_name, server_name, username, password):
 
 
 def get_all_docs(db):
-    return db.calgary_canada_osm.find({'address.street' : {'$exists' : 1}})
+    return db.DANDP3.find({'address.street' : {'$exists' : 1}})
 
 
 # Instructor Code
 def aggregate(db, pipeline):
-    result = db.calgary_canada_osm.aggregate(pipeline)
+    result = db.DANDP3.aggregate(pipeline)
     return result
 
 
 def update_dirty_docs(db, changes):
     for c in changes.keys():
-        db.calgary_canada_osm.update_one({'address.street' : c}, {'$set' : {'address.street' : changes[c]}})
+        db.DANDP3.update_one({'address.street' : c}, {'$set' : {'address.street' : changes[c]}})
 
 db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 

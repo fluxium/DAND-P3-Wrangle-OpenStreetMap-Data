@@ -1,1 +1,4 @@
 mongoimport.exe --db osm --file c:\data\import\calgary_canada_osm.json --drop
+
+# Azure CoreOS VM
+docker exec -it docdb mongoimport -u "docdbadmin" -p '' --collection "DANDP3" --authenticationDatabase "admin" /data/db/import/calgary_canada_osm.json --db wrangling

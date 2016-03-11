@@ -13,3 +13,6 @@ http://api.mongodb.org/python/current/tutorial.html
 
 http://stackoverflow.com/questions/3483318/performing-regex-queries-with-pymongo
 
+http://stackoverflow.com/questions/29577713/string-field-value-length-in-mongodb
+
+https://docs.mongodb.org/manual/reference/operator/query/not/
