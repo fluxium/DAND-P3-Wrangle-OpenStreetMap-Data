@@ -22,10 +22,13 @@ DIR_EXPECTED = ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']
             
 
 # Instructor Code
-def get_db(db_name):
+def get_db(db_name, server_name, username, password):
     from pymongo import MongoClient
-    client = MongoClient('DBAAdmin:27017')
+    
+    client = MongoClient(server_name)
     db = client[db_name]
+    db.authenticate(username, password, source='admin')
+    
     return db
 
 
@@ -37,7 +40,7 @@ def make_pipeline():
     return pipeline
 
 def get_all_docs(db):
-    return db.calgary_canada_osm.find({'address.street' : {'$exists' : 1}})
+    return db.DANDP3.find({'address.street' : {'$exists' : 1}})
 
 
 # Instructor Code
@@ -66,7 +69,7 @@ def remove_dir(m):
         return m.group() 
 
 
-db = get_db('osm')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 #pipeline = make_pipeline()
 #result = aggregate(db, pipeline)
 result = get_all_docs(db)

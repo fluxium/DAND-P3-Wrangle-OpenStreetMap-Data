@@ -10,10 +10,13 @@ Extract OpenStreetMaps data.
 
 
 # Instructor Code
-def get_db(db_name):
+def get_db(db_name, server_name, username, password):
     from pymongo import MongoClient
-    client = MongoClient('DBAAdmin:27017')
+    
+    client = MongoClient(server_name)
     db = client[db_name]
+    db.authenticate(username, password, source='admin')
+    
     return db
 
 
@@ -29,9 +32,9 @@ def aggregate(db, pipeline):
 
 def update_dirty_docs(db, changes):
     for c in changes.keys():
-        db.calgary_canada_osm.update({'address.street' : c}, {'$set' : {'address.street' : changes[c]}})
+        db.calgary_canada_osm.update_one({'address.street' : c}, {'$set' : {'address.street' : changes[c]}})
 
-db = get_db('osm')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 
 changes = {'Rivercrest Drive South-east' : 'Rivercrest Drive SE'}
 update_dirty_docs(db, changes)
