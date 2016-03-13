@@ -16,3 +16,6 @@ http://stackoverflow.com/questions/3483318/performing-regex-queries-with-pymongo
 http://stackoverflow.com/questions/29577713/string-field-value-length-in-mongodb
 
 https://docs.mongodb.org/manual/reference/operator/query/not/
+http://stackoverflow.com/questions/26188124/carriage-returns-in-markdown-section-of-ipython-notebook
+http://stackoverflow.com/questions/2298870/mongodb-get-names-of-all-keys-in-collection
+http://api.mongodb.org/python/current/examples/aggregation.html
