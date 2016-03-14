@@ -19,7 +19,10 @@ ST_TYPE_EXPECTED = ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place",
             'Highway', 'Gate', 'Crescent', 'Close', 'Bay', 'Manor', 'Circle']
             
 DIR_EXPECTED = ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']
-            
+
+def get_password():
+    password_file = open('passwords.txt', 'r')
+    return password_file.readline()
 
 # Instructor Code
 def get_db(db_name, server_name, username, password):
@@ -69,7 +72,7 @@ def remove_dir(m):
         return m.group() 
 
 
-db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', get_password())
 #pipeline = make_pipeline()
 #result = aggregate(db, pipeline)
 result = get_all_docs(db)
