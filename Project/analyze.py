@@ -71,7 +71,7 @@ def get_largest_doc(results):
             max_doc = r
     return (max_doc_len, max_doc)
 
-db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '***REMOVED***')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 all_docs = list(get_all_docs(db))
 
 # Number of Documents, 863038

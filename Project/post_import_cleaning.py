@@ -38,7 +38,7 @@ def update_dirty_postcodes(db, changes):
     for c in changes.keys():
         db.DANDP3.update_many({'address.postcode' : c}, {'$set' : {'address.postcode' : changes[c]}})
 
-db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '***REMOVED***')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 
 street_changes = {'Rivercrest Drive South-east' : 'Rivercrest Drive SE'}
 update_dirty_docs(db, street_changes)

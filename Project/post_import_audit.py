@@ -69,7 +69,7 @@ def remove_dir(m):
         return m.group() 
 
 
-db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '***REMOVED***')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', '')
 #pipeline = make_pipeline()
 #result = aggregate(db, pipeline)
 result = get_all_docs(db)
