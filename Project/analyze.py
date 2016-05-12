@@ -8,7 +8,9 @@ This file contains code to validate cleaning done to the Zen Map Calgary Metro
 Extract OpenStreetMaps data.
 """
 
+# Because checking code with passwords in to github is a bad idea
 def get_password():
+    ''' Retrieves a password from a local textfile called passwords.txt'''
     password_file = open('passwords.txt', 'r')
     return password_file.readline()
 
@@ -65,7 +67,9 @@ def aggregate(db, pipeline):
     result = db.DANDP3.aggregate(pipeline)
     return result
 
+# Computationally expensive, should be a way to get len from mongo
 def get_largest_doc(results):
+    ''' Returns the largest raw document from a results set'''
     max_doc_len = 0
     max_doc = {}
     for r in results:
@@ -132,13 +136,13 @@ fast_food_by_name = list(aggregate(db, \
  {'$group' : {'_id' : '$name', 'count' : {'$sum' : 1}}}, \
  {'$sort' : {'count' : -1}}]))
  
- print fast_food_by_name[0:3]
+print fast_food_by_name[0:3]
  
- """
- [{u'_id': u'Tim Hortons', u'count': 59},
- {u'_id': u'Subway', u'count': 54},
- {u'_id': u'Shell', u'count': 36}]
- """
+"""
+[{u'_id': u'Tim Hortons', u'count': 59},
+{u'_id': u'Subway', u'count': 54},
+{u'_id': u'Shell', u'count': 36}]
+"""
 
 
 # How is the attraction key being used?
@@ -188,12 +192,12 @@ recycling_accepts = list(db.DANDP3.find({'$or' : [{"recycling:batteries": {'$exi
                                 )
                 )
 
-print recycling[0]
+print recycling_accepts
 
-recycling_amenity = list(db.DANDP3.find({"amenity":"recycling"})
+recycling_amenity = list(db.DANDP3.find({"amenity":"recycling"}))
 
 
-"""
+'''
 http://stackoverflow.com/questions/2298870/mongodb-get-names-of-all-keys-in-collection
 Executed using linux mongo client to get list of unique keys
 mr = db.runCommand({
@@ -615,15 +619,6 @@ Results:
         "wifi",
         "wikipedia",
         "wood",
-        "zoo"
-]
-
-
-
-"""
-
-
-
-
-
+        "zoo"]
+'''
 

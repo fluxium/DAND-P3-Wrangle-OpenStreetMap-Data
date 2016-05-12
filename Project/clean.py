@@ -100,14 +100,18 @@ def process_map(file_in, pretty = False):
 
 
 def shape_element(element):
+    ''' Calls shape_base with incoming element 
+        if it is a node, way or relation
+    '''
     node = {}
-    if element.tag == 'node' or element.tag == 'way' or element.tag == 'relation':
+    if element.tag == 'node' or element.tag == 'way' \
+        or element.tag == 'relation':
         node = shape_base(element)
     return node
     
 
 def shape_base(element):
-    
+    ''' Creates top level '''
     node = defaultdict()    
     
     # Keys for the created dictionary
@@ -119,7 +123,8 @@ def shape_base(element):
     
     # Probably could use the .get() method on element here
     if 'lat' in element.attrib and 'lon' in element.attrib:
-        node['pos'] = [float(element.attrib['lat']), float(element.attrib['lon'])]       
+        node['pos'] = [float(element.attrib['lat']), \
+            float(element.attrib['lon'])]       
 
     # http://stackoverflow.com/questions/3294889/iterating-over-dictionaries-using-for-loops-in-python    
     for k, v in (element.attrib).iteritems():
