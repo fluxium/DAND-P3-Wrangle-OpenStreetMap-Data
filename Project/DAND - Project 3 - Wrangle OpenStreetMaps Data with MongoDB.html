@@ -186,9 +186,12 @@ div#notebook {
 <h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><p><a href="#Problems-Encountered-in-the-Map">Problems Encountered in the Map</a></p>
 <ul>
 <li><a href="#Directional-Suffixes">Directional Suffixes</a></li>
+<li><a href="#Postal-Codes">Postal Codes</a></li>
+<li><a href="#Rural-Roads">Rural Roads</a></li>
 </ul>
 <p><a href="#Data-Overview">Data Overview</a></p>
 <p><a href="#Additional-Ideas">Additional Ideas</a></p>
+<p><a href="#Conclusion">Conclusion</a></p>
 
 </div>
 </div>
@@ -204,7 +207,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c">#%run tags.py</span>
@@ -327,6 +330,16 @@ defaultdict(&lt;type &apos;int&apos;&gt;, {&apos;changeset&apos;: 863038, &apos;
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p>The following is an explanation of my process of creating clean.py.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Directional-Suffixes">Directional Suffixes<a class="anchor-link" href="#Directional-Suffixes">&#182;</a></h4>
 </div>
 </div>
@@ -346,7 +359,7 @@ defaultdict(&lt;type &apos;int&apos;&gt;, {&apos;changeset&apos;: 863038, &apos;
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Created a function in audit.py to get a count of tags using a specific attribute. member tags with role attributes were discovered that needed to be compensated for in the design of the cleaning functions. There were several 'type' attributes that would conflict with the 'type' key used in shape_node(), so it was renamed to 'node_type'. To assist in building the structure of the tags that had 'member' children member_prototype.json was produced.</p>
+<p>Created a function in audit.py to get a count of tags using a specific attribute. member tags with role attributes were discovered that needed to be compensated for in the design of the cleaning functions. There were several 'type' attributes that would conflict with the 'type' key used in shape_node(), so it was renamed to 'node_type'. To assist in building the structure of the tags that had 'member' children member_prototype.json was produced to help me visualize what it should look like. From that I was able to correctly code the section in shape_node for member tags.</p>
 
 </div>
 </div>
@@ -386,7 +399,45 @@ defaultdict(&lt;type &apos;int&apos;&gt;, {&apos;changeset&apos;: 863038, &apos;
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>After the second import the address data was audited again and along with the expected uncleaned values like 'West Creek Court 200' was 'Rivercrest Drive South-east'. The DIR_MAPPING dictionary in clean.py was amended to include the mapping for this dirty value. Instead of extracting and importing all data again post_import_clean.py was used to correct it in MongoDB</p>
+<p>After the second import the address data was audited again and along with the expected uncleaned values like 'West Creek Court 200' was 'Rivercrest Drive South-east'. The DIR_MAPPING dictionary in clean.py was amended to include the mapping for this dirty value. Instead of extracting and importing all data again post_import_clean.py was used to correct it in MongoDB.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Postal-Codes">Postal Codes<a class="anchor-link" href="#Postal-Codes">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Some postal codes were not in the official format A1B 2C3. The bad postcodes where audited in post_import_audit.py. There were 49 malformed postcodes, 33 of them being unique. A defaultdict was used to produce a dict with keys of the malformed postal codes with blank values. This dict was printed and copied in to the editor and the corrections were done manually since there were an managable number. This took about 5 minutes. This dictionary with the now correct values was moved to post_import_clean.py and a new fuction was created to do the actual updates on my MongoDB instance. After running the cleaning file again the post_import_audit.py was run again and the query to check for malformed postcodes returned no results.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Rural-Roads">Rural Roads<a class="anchor-link" href="#Rural-Roads">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This dataset encompassed a very large area and included large parts of farm area around the City of Calgary. As a result there are several rural roads like 'Township Road 204A' which aren't strictly part of the city. Their inclusion did not cause significant issues but they do not add much value to the dataset.</p>
 
 </div>
 </div>
@@ -407,8 +458,32 @@ defaultdict(&lt;type &apos;int&apos;&gt;, {&apos;changeset&apos;: 863038, &apos;
 <div class="text_cell_render border-box-sizing rendered_html">
 <h5 id="File-Sizes">File Sizes<a class="anchor-link" href="#File-Sizes">&#182;</a></h5><p>calgary_canada.osm : 159 MB</p>
 <p>calgary_canada.osm.json : 184 MB</p>
-<h5 id="Number-of-Documents">Number of Documents<a class="anchor-link" href="#Number-of-Documents">&#182;</a></h5><p>db.calgary_canada_osm.count() : 86303</p>
-<h5 id="Largest-Document">Largest Document<a class="anchor-link" href="#Largest-Document">&#182;</a></h5><p>(see analyze.py) 11288 characters</p>
+<h5 id="Number-of-Documents">Number of Documents<a class="anchor-link" href="#Number-of-Documents">&#182;</a></h5>
+<pre><code>db.DANDP3.count() : 863038
+
+</code></pre>
+<h6 id="See-analyze.py-for-full-code-for-the-following">See analyze.py for full code for the following<a class="anchor-link" href="#See-analyze.py-for-full-code-for-the-following">&#182;</a></h6><h5 id="Largest-Document">Largest Document<a class="anchor-link" href="#Largest-Document">&#182;</a></h5>
+<pre><code>print get_largest_doc(get_all_docs(db)) : 112886 characters, 'Proposed West Stoney Trail'
+
+</code></pre>
+<h5 id="Number-of-Unique-Users">Number of Unique Users<a class="anchor-link" href="#Number-of-Unique-Users">&#182;</a></h5>
+<pre><code>print len(get_users(docs)) : 767
+
+</code></pre>
+<h5 id="Top-Three-Contributors">Top Three Contributors<a class="anchor-link" href="#Top-Three-Contributors">&#182;</a></h5>
+<pre><code>print users[0:3] : [{u'count': 309818, u'_id': u'sbrown'}, {u'count': 89769, u'_id': u'Zippanova'}, {u'count': 46296, u'_id': u'markbegbie'}]
+
+</code></pre>
+<h5 id="Rank-of-My-Contributions">Rank of My Contributions<a class="anchor-link" href="#Rank-of-My-Contributions">&#182;</a></h5>
+<pre><code>print 'My Rank ' + mb_rank : 157
+
+</code></pre>
+<h5 id="Number-of-Ways">Number of Ways<a class="anchor-link" href="#Number-of-Ways">&#182;</a></h5>
+<pre><code>print 'Number of Ways: ' + str(db.DANDP3.find({"node_type":"way"}).count()) : 83492
+
+</code></pre>
+<h5 id="Number-of-Nodes">Number of Nodes<a class="anchor-link" href="#Number-of-Nodes">&#182;</a></h5>
+<pre><code>print 'Number of Nodes: ' + str(db.DANDP3.find({"node_type":"node"}).count()) : 779009</code></pre>
 
 </div>
 </div>
@@ -419,6 +494,93 @@ defaultdict(&lt;type &apos;int&apos;&gt;, {&apos;changeset&apos;: 863038, &apos;
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Additional-Ideas">Additional Ideas<a class="anchor-link" href="#Additional-Ideas">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Postal-Code-Standarization">Postal Code Standarization<a class="anchor-link" href="#Postal-Code-Standarization">&#182;</a></h4><p>During my post import cleaning I made several standardization corrections to the postcodes in the dataset. However, even the correctly formatted postcodes may not be legitimate postcodes. In order to accomplish this, I would have to develop functions that could communicate with the Canada Post address validation API. This would allow me to fully validate whole addresses including the postcodes and then take corrective action. The Canada Post API has the capability to suggest addresses that a closely matching the query submitted. This might pose an interesting challenge to do this autonomously without user intervention.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Analyze-User-Contributions-by-Area">Analyze User Contributions by Area<a class="anchor-link" href="#Analyze-User-Contributions-by-Area">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I thought it might be interesting to analyze what areas of the city users tend to make contributions. Are there patterns in user contribution that would indicate where that users lives or works? Are there more contributions in newer areas of the city or is it evenly distributed? How much does the City of Calgary contribute? These are just a few questions that I would be interested in digging in to further. To get the most satisfying answers machine learning would have to be implemented to expose these correlations in the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Additional-Analysis">Additional Analysis<a class="anchor-link" href="#Additional-Analysis">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="How-many-places-in-Calgary-accept-bitcoin?">How many places in Calgary accept bitcoin?<a class="anchor-link" href="#How-many-places-in-Calgary-accept-bitcoin?">&#182;</a></h5>
+<pre><code>len(list(db.DANDP3.find({"payment:bitcoin" : "yes"}))) : 18 
+
+</code></pre>
+<h5 id="What-are-the-most-common-amenties?">What are the most common amenties?<a class="anchor-link" href="#What-are-the-most-common-amenties?">&#182;</a></h5>
+<pre><code>amenites = list(aggregate(db, [{'$match' : {'amenity' : {'$exists' : 1}}},\
+                           {'$group' : {'_id' : '$amenity', 'count' : \
+                           {'$sum' : 1}}}, {'$sort' : {'count' : -1}}]))
+print amenites[0:3]
+[{u'count': 1735, u'_id': u'parking'}, {u'count': 461, u'_id': u'restaurant'}, {u'count': 441, u'_id': u'fast_food'}]
+
+</code></pre>
+<h5 id="What-are-the-most-common-fast-food-places?">What are the most common fast food places?<a class="anchor-link" href="#What-are-the-most-common-fast-food-places?">&#182;</a></h5>
+<pre><code>fast_food_by_name = list(aggregate(db, [{'$match' : {'amenity' : {'$exists' : 1}, 'name' : {'$exists' : 1} }}, {'$group' : {'_id' : '$name', 'count' : {'$sum' : 1}}},{'$sort' : {'count' : -1}}]))
+print fast_food_by_name[0:3]
+
+ [{u'_id': u'Tim Hortons', u'count': 59}, {u'_id': u'Subway', u'count': 54}, {u'_id': u'Shell', u'count': 36}]
+
+</code></pre>
+<h5 id="Additional-additonal-analysis-can-be-found-in-analyze.py-starting-at-line-111.">Additional additonal analysis can be found in analyze.py starting at line 111.<a class="anchor-link" href="#Additional-additonal-analysis-can-be-found-in-analyze.py-starting-at-line-111.">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Conclusion">Conclusion<a class="anchor-link" href="#Conclusion">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When working on the Additional Analysis section I discovered that there were some keys that I would have liked to take a closer look but their structure (key:sub_key) made it difficult to get good grouping. This solidified the lesson of audit, clean, repeat for me. Because of the nature of this issue I would have had to go back to the original file processing code and add logic to turn the key:sub_key entries to key : [sub_key : value] entries. For the sake of time I chose not to do this for this project but I want to acknowledge that despite my efforts in cleaning the dataset there is still much more that can be done to improve it.</p>
+<p>Based on the vast number of contributors, it would seem that people are interested in keeping the map data for Calgary up-to-date. This has advantages and disadvantages for the quality of the data. The more users that contribute the more ways data could be entered incorrectly. Understanding that OpenStreetMaps endeavors to be open, it might be advantageous to intelligently offer suggestions as someone is entering data. This might reduce the number of ill-conceived keys in the data and improve the analysis of map data.</p>
+<p>While working with OpenStreetMaps data I reflected on what an undertaking it would be to consume these data to enrich a service like Google Maps. A pipeline to ingest these data would have to account for many of the factors that I had to consider plus many more. I have only examined a small fraction of the OpenStreeMaps data and there was a wide range of data quality challenges. I would be interested to see if the techniques I employed are similar to engineers who work on systems that consider ALL OpenStreetMaps data. No doubt, as we produce more and more data as a society we will need to develop systems that assist the data wrangler. For now, we will just have to keep auditing, cleaning, and repeating.</p>
+
 </div>
 </div>
 </div>

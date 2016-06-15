@@ -18,7 +18,6 @@ So, we have to see if we have such tags, and if we have any tags with problemati
 Please complete the function 'key_type'.
 """
 
-
 lower = re.compile(r'^([a-z]|_)*$')
 lower_colon = re.compile(r'^([a-z]|_)*:([a-z]|_)*$')
 problemchars = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')

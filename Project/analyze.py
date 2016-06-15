@@ -8,6 +8,12 @@ This file contains code to validate cleaning done to the Zen Map Calgary Metro
 Extract OpenStreetMaps data.
 """
 
+# Because checking code with passwords in to github is a bad idea
+def get_password():
+    ''' Retrieves a password from a local textfile called passwords.txt'''
+    password_file = open('passwords.txt', 'r')
+    return password_file.readline()
+
 # Instructor Code
 def get_db(db_name, server_name, username, password):
     from pymongo import MongoClient
@@ -61,7 +67,9 @@ def aggregate(db, pipeline):
     result = db.DANDP3.aggregate(pipeline)
     return result
 
+# Computationally expensive, should be a way to get len from mongo
 def get_largest_doc(results):
+    ''' Returns the largest raw document from a results set'''
     max_doc_len = 0
     max_doc = {}
     for r in results:
@@ -71,7 +79,7 @@ def get_largest_doc(results):
             max_doc = r
     return (max_doc_len, max_doc)
 
-db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', 'DDBM3ph!b0$h3th')
+db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', get_password())
 all_docs = list(get_all_docs(db))
 
 # Number of Documents, 863038
@@ -114,32 +122,82 @@ amenites = list(aggregate(db, [{'$match' : {'amenity' : {'$exists' : 1}}},\
                                {'$sum' : 1}}}, {'$sort' : {'count' : -1}}]))
 print amenites[0:3]
 
-# http://api.mongodb.org/python/current/examples/aggregation.html
-# Pymongo MapReduce Example
-from bson.code import Code
-mapper = Code("""
-               function () {
-                 this.tags.forEach(function(z) {
-                   emit(z, 1);
-                 });
-               }
-               """)
+# Are there any keys that look interestng on parking amenities?
+parking = list(db.DANDP3.find({"amenity":"parking"}))
+print parking
 
-reducer = Code("""
-                function (key, values) {
-                  var total = 0;
-                  for (var i = 0; i < values.length; i++) {
-                    total += values[i];
-                  }
-                  return total;
-                }
-               """)
-               
-result = db.DANDP3.map_reduce(mapper, reducer, "myresults")
-keys = list(result.find())
+# Are there any keys that look interestng on fast_food amenities?
+fast_food = list(db.DANDP3.find({"amenity":"fast_food"}))
+print fast_food
 
+# What are the most common fast food places?
+fast_food_by_name = list(aggregate(db, \
+[{'$match' : {'amenity' : {'$exists' : 1}, 'name' : {'$exists' : 1} }},\
+ {'$group' : {'_id' : '$name', 'count' : {'$sum' : 1}}}, \
+ {'$sort' : {'count' : -1}}]))
+ 
+print fast_food_by_name[0:3]
+ 
+"""
+[{u'_id': u'Tim Hortons', u'count': 59},
+{u'_id': u'Subway', u'count': 54},
+{u'_id': u'Shell', u'count': 36}]
+"""
+
+
+# How is the attraction key being used?
+attractions = list(db.DANDP3.find({"attraction": {'$exists' : 1}}))
+print attractions[0]
 
 """
+1 of 10
+{u'_id': ObjectId('56e0e5e72ceae91cdb5556c8'),
+  u'attraction': u'animal',
+  u'created': {u'changeset': u'15900093',
+   u'timestamp': u'2013-04-28T19:17:28Z',
+   u'uid': u'339912',
+   u'user': u'markbegbie',
+   u'version': u'1'},
+  u'id': u'2284800316',
+  u'name': u'Big Horn Sheep',
+  u'node_type': u'node',
+  u'pos': [51.0458815, -114.0244414],
+  u'species': u'Ovis canadensis',
+  u'tourism': u'attraction'}
+"""
+
+# Lets look at reclcying
+recycling_accepts = list(db.DANDP3.find({'$or' : [{"recycling:batteries": {'$exists' : 1}},
+                                 {"recycling:cans": {'$exists' : 1}},
+                                 {"recycling:cardboard": {'$exists' : 1}},
+                                 {"recycling:cartons": {'$exists' : 1}},
+                                 {"recycling:clothes": {'$exists' : 1}},
+                                 {"recycling:electrical_appliances": {'$exists' : 1}},
+                                 {"recycling:glass": {'$exists' : 1}},
+                                 {"recycling:glass_bottles": {'$exists' : 1}},
+                                 {"recycling:green_waste": {'$exists' : 1}},
+                                 {"recycling:magazines": {'$exists' : 1}},
+                                 {"recycling:newspaper": {'$exists' : 1}},
+                                 {"recycling:paper": {'$exists' : 1}},
+                                 {"recycling:paper_packaging": {'$exists' : 1}},
+                                 {"recycling:plastic": {'$exists' : 1}},
+                                 {"recycling:plastic_bottles": {'$exists' : 1}},
+                                 {"recycling:plastic_packaging": {'$exists' : 1}},
+                                 {"recycling:scrap_metal": {'$exists' : 1}},
+                                 {"recycling:small_appliances": {'$exists' : 1}},
+                                 {"recycling:waste": {'$exists' : 1}},
+                                 {"recycling:wood": {'$exists' : 1}},
+                                 {"recycling_type": {'$exists' : 1}}]
+                                 }
+                                )
+                )
+
+print recycling_accepts
+
+recycling_amenity = list(db.DANDP3.find({"amenity":"recycling"}))
+
+
+'''
 http://stackoverflow.com/questions/2298870/mongodb-get-names-of-all-keys-in-collection
 Executed using linux mongo client to get list of unique keys
 mr = db.runCommand({
@@ -561,15 +619,6 @@ Results:
         "wifi",
         "wikipedia",
         "wood",
-        "zoo"
-]
-
-
-
-"""
-
-
-
-
-
+        "zoo"]
+'''
 
