@@ -16,6 +16,7 @@ def get_password():
 
 # Instructor Code
 def get_db(db_name, server_name, username, password):
+    ''' Returns an authenticated MongoDB client object'''
     from pymongo import MongoClient
     
     client = MongoClient(server_name)
@@ -34,6 +35,10 @@ def make_pipeline():
     return pipeline
 
 def user_pipeline():
+    ''' 
+        Generates a well formatted MongoDB aggregate query for unique users
+        sorted by the count of the occurrence of each username decending  
+    '''
     pipeline = [ 
                     {
                         '$group' : {
@@ -47,11 +52,12 @@ def user_pipeline():
                 ]
     return pipeline
 
-def get_users(cursor):
-    users = []
-    for d in docs:
-        users.append(d)
-    return users
+def get_doc_list(cursor):
+    ''' Returns a list a list of docs from a cursor'''
+    docs = []
+    for d in cursor:
+        docs.append(d)
+    return docs
 
 # This function was replaced with '$sort' : { 'count' : -1 } in pipeline
 def sort_users(users, key):
@@ -69,7 +75,7 @@ def aggregate(db, pipeline):
 
 # Computationally expensive, should be a way to get len from mongo
 def get_largest_doc(results):
-    ''' Returns the largest raw document from a results set'''
+    ''' Returns the largest raw document from a result set'''
     max_doc_len = 0
     max_doc = {}
     for r in results:
@@ -90,7 +96,7 @@ print 'Number of Documents: ' + str(db.DANDP3.count())
 #print 'Largest Document: ' + get_largest_doc(all_docs)
 
 docs = aggregate(db, user_pipeline())
-users = get_users(docs)
+users = get_doc_list(docs)
 
 # Number of Unique Users
 print 'Number of Unique Users: ' + str(len(users))

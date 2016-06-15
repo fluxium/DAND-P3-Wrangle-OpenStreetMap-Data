@@ -100,9 +100,7 @@ def process_map(file_in, pretty = False):
 
 
 def shape_element(element):
-    ''' Calls shape_base with incoming element 
-        if it is a node, way or relation
-    '''
+    ''' Returns a node the basic initial structure'''
     node = {}
     if element.tag == 'node' or element.tag == 'way' \
         or element.tag == 'relation':

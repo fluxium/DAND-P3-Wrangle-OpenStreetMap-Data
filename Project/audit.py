@@ -15,6 +15,8 @@ import re
 import pprint
 
 OSMFILE = "calgary_canada.osm"
+
+# 
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 
 
@@ -37,6 +39,10 @@ ST_TYPE_MAPPING = { "St": "Street",
 
 # Instructor Code
 def audit_street_type(street_types, street_name):
+    '''
+    Modfies street_types dict. Adds street_name to dict if it does not have
+    a conformed street type or conformed directional suffix.
+    '''
     m = get_suffix(street_name)
     if m:
         street_type = m.group()
@@ -44,12 +50,21 @@ def audit_street_type(street_types, street_name):
                 street_types[street_type].add(street_name)
 
 def get_suffix(street_name):
-    # IF the first match is a direction abreviation remove it and then search
-    # search the string again    
-    return street_type_re.search((street_type_re.sub(remove_dir, street_name)))
+    '''
+    Returns the last word from street_name with any directional suffixes
+    removed.
+    '''
+    # DEBUG: REMVOED A SET OF PARENS AROUND INNER STATEMENT
+    # sub 
+    return street_type_re.search(street_type_re.sub(remove_dir, street_name))
 
 
 def remove_dir(m):
+    '''
+    Accepts a RegEx match. Returns and empty string if the match is an
+    expected directional suffix. Returns the whole match if it is not a 
+    directional suffix.
+    '''
     if m.group().upper() in DIR_EXPECTED:
         return ''
     else:
@@ -65,7 +80,6 @@ def audit(osmfile):
     osm_file = open(osmfile, "r")
     street_types = defaultdict(set)
     for event, elem in ET.iterparse(osm_file, events=("start",)):
-
         if elem.tag == "node" or elem.tag == "way":
             for tag in elem.iter("tag"):
                 if is_street_name(tag):
@@ -84,6 +98,11 @@ def find_tags_with_attrib(osmfile, attrib):
 
 # http://stackoverflow.com/questions/3543559/python-regex-match-and-replace
 def process_match(m):
+    '''
+    Returns the value from ST_TYPE_MAPPING with corresponding key from RegEx
+    search. If no key exists the orginal search results from m are returned 
+    unmodified.
+    '''
     if ST_TYPE_MAPPING.get(m.group()) != None:
         return ST_TYPE_MAPPING.get(m.group())
     else:
@@ -91,7 +110,11 @@ def process_match(m):
     return 
 
 
-def update_name(name): 
+def update_name(name):
+    ''' 
+    Returns conformed name if there was a mapping in ST_TYPE_MAPPING.
+    Otherwise returns name.
+    '''
     return street_type_re.sub(process_match, name)
 
 
