@@ -21,11 +21,13 @@ ST_TYPE_EXPECTED = ["Street", "Avenue", "Boulevard", "Drive", "Court", "Place",
 DIR_EXPECTED = ['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']
 
 def get_password():
+    ''' Retrieves a password from a local textfile called passwords.txt'''
     password_file = open('passwords.txt', 'r')
     return password_file.readline()
 
 # Instructor Code
 def get_db(db_name, server_name, username, password):
+    ''' Returns an authenticated MongoDB client object'''
     from pymongo import MongoClient
     
     client = MongoClient(server_name)
@@ -60,8 +62,9 @@ def audit_street_type(street_types, street_name, docid):
     
     
 def get_suffix(street_name):
-    # IF the first match is a direction abreviation remove it and then search
-    # search the string again    
+    ''' If the first match is a direction abreviation remove it and then search
+    search the string again
+    '''
     return street_type_re.search((street_type_re.sub(remove_dir, street_name)))
 
 

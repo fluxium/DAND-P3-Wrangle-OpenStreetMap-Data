@@ -8,6 +8,7 @@ This file contains code to further clean data from the Zen Map Calgary Metro
 Extract OpenStreetMaps data.
 """
 import re
+from collections import defaultdict
 
 def get_password():
     password_file = open('passwords.txt', 'r')
@@ -73,3 +74,26 @@ These are the problem postcodes from post_import_audit.py:
 
 Fixes were imputted manually
 """
+
+'''
+Following is code to programatically clean the postcodes above that were cleaned
+by mapping and manually correcting the values previously
+'''
+
+re_valid_post_code = re.compile('^([A-Z]\d[A-Z]( )\d[A-Z]\d)')
+re_pc_no_space = re.compile('^([A-Z]\d[A-Z]\d[A-Z]\d)')
+
+postcode_changes = defaultdict(set)
+
+bad_post_codes = [u'1212', u'T3A6J1', u'T3a4b3', u'T3K-5P4', u'T3R0A1',
+                  u'T1X1L8', u't2n 3P3', u'T3A0H7', u' T2J 0P8', u'T2J2T8', 
+                  u'T2P0W3', u'T3J4L8', u'T2R0E7', u'T3N0E4', u'T2L1G1',
+                  u't3G 5T3', u'T3J0S3', u'T2T0A7;T2T 0A7', u't2n 4l7',
+                  u'T3G2V7', u'T3J0G7', u'T2P3P8', u'T2E', u'T3N0A6',
+                  u'403-719-6250', u't3c2h6', u'T2V2X3', u'T3B3X3', u'T2G0H7',
+                  u'AB T2S 2N1', u'T3R0H3', u'T3A5R8', u'AB T2G 2L2']
+
+for pc in bad_post_codes:
+    match = re_pc_no_space.match(pc)
+    if match:
+        postcode_changes[match.group()] = match.group()[0:3] + ' ' + match.group()[3:]

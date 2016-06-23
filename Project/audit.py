@@ -39,8 +39,7 @@ ST_TYPE_MAPPING = { "St": "Street",
 
 # Instructor Code
 def audit_street_type(street_types, street_name):
-    '''
-    Modfies street_types dict. Adds street_name to dict if it does not have
+    ''' Modfies street_types dict. Adds street_name to dict if it does not have
     a conformed street type or conformed directional suffix.
     '''
     m = get_suffix(street_name)
@@ -50,8 +49,7 @@ def audit_street_type(street_types, street_name):
                 street_types[street_type].add(street_name)
 
 def get_suffix(street_name):
-    '''
-    Returns the last word from street_name with any directional suffixes
+    ''' Returns the last word from street_name with any directional suffixes
     removed.
     '''
     # DEBUG: REMVOED A SET OF PARENS AROUND INNER STATEMENT
@@ -60,8 +58,7 @@ def get_suffix(street_name):
 
 
 def remove_dir(m):
-    '''
-    Accepts a RegEx match. Returns and empty string if the match is an
+    ''' Accepts a RegEx match. Returns and empty string if the match is an
     expected directional suffix. Returns the whole match if it is not a 
     directional suffix.
     '''
@@ -98,8 +95,7 @@ def find_tags_with_attrib(osmfile, attrib):
 
 # http://stackoverflow.com/questions/3543559/python-regex-match-and-replace
 def process_match(m):
-    '''
-    Returns the value from ST_TYPE_MAPPING with corresponding key from RegEx
+    ''' Returns the value from ST_TYPE_MAPPING with corresponding key from RegEx
     search. If no key exists the orginal search results from m are returned 
     unmodified.
     '''
@@ -111,8 +107,7 @@ def process_match(m):
 
 
 def update_name(name):
-    ''' 
-    Returns conformed name if there was a mapping in ST_TYPE_MAPPING.
+    ''' Returns conformed name if there was a mapping in ST_TYPE_MAPPING.
     Otherwise returns name.
     '''
     return street_type_re.sub(process_match, name)

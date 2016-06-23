@@ -22,12 +22,16 @@ OSMFILE = "calgary_canada.osm"
 
 # RegEx for various key validations. All provided by Instructor Code
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
+
 lower = re.compile(r'^([a-z]|_)*$')
+
 # Useful for fiding k values like addr:street
 lower_colon = re.compile(r'^([a-z]|_)*:([a-z]|_)*$')
+
 # Useful for discovering values with characters that would be problematic for
 # keys in MongoDB
 problemchars = re.compile(r'[=\+/&<>;\'"\?%#$@\,\. \t\r\n]')
+
 street_type_re = re.compile(r'\b\S+\.?$', re.IGNORECASE)
 
 
@@ -100,7 +104,7 @@ def process_map(file_in, pretty = False):
 
 
 def shape_element(element):
-    ''' Returns a node the basic initial structure'''
+    ''' Returns a node with the basic initial structure'''
     node = {}
     if element.tag == 'node' or element.tag == 'way' \
         or element.tag == 'relation':
@@ -109,7 +113,9 @@ def shape_element(element):
     
 
 def shape_base(element):
-    ''' Creates top level '''
+    ''' Creates top level structure for element then calls shape_node to build
+    Node details.
+    '''
     node = defaultdict()    
     
     # Keys for the created dictionary
@@ -133,9 +139,11 @@ def shape_base(element):
             
     return shape_node(node, element)
  
-
+# This function does several things. It should be broken in to separate concerns
 def shape_node(node, element):
-    
+    ''' Builds structure for node details. Extracts tags and transforms them to
+    key-value pairs on the node.
+    '''
     node_refs = []
     address = defaultdict()    
     members = []
@@ -146,8 +154,11 @@ def shape_node(node, element):
             k = t.attrib.get('k')
             v = t.attrib.get('v')
             
+            # Ensure the key is not multi-part or containing invalid chars for 
+            # keys in mongodb
             l, lc, pc = regex_key(k)
             
+            # Keys with illegal characters for mondodb keys are not added
             if pc == None:
                 if k.startswith('addr'):
                     if lc:       
@@ -178,6 +189,7 @@ def shape_node(node, element):
    
 
 def regex_key(k):
+    ''' Check for nonconformed or invalid characters'''
     l = lower.search(k)
     lc = lower_colon.search(k)
     pc = problemchars.search(k)
@@ -186,7 +198,7 @@ def regex_key(k):
 
 
 def update_st_name(street_name):
-
+    ''' Recursive function to conform street types and directional suffixes'''
     street_name = street_name.split(',')[0]
 
     init_search = street_type_re.search(street_name)
@@ -224,6 +236,7 @@ def update_st_name(street_name):
         # return 'None'
         return street_name
 
+# Could be replaced with lambda where this is used
 def remove_suffix(m):
     return ''
  

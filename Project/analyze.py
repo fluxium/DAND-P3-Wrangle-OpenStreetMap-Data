@@ -35,9 +35,8 @@ def make_pipeline():
     return pipeline
 
 def user_pipeline():
-    ''' 
-        Generates a well formatted MongoDB aggregate query for unique users
-        sorted by the count of the occurrence of each username decending  
+    ''' Generates a well formatted MongoDB aggregate query for unique users
+    sorted by the count of the occurrence of each username decending  
     '''
     pipeline = [ 
                     {
@@ -84,6 +83,8 @@ def get_largest_doc(results):
             max_doc_len = current_len
             max_doc = r
     return (max_doc_len, max_doc)
+
+
 
 db = get_db('wrangling', '40.78.26.96:27017', 'docdbadmin', get_password())
 all_docs = list(get_all_docs(db))
