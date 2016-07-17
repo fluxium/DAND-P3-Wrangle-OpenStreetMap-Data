@@ -88,6 +88,7 @@ DIR_MAPPING = {'East' : 'E',
 
 # Instructor Code
 def process_map(file_in, pretty = False):
+    ''' Creates a JSON version of an OSM file'''
     # You do not need to change this file
     file_out = "{0}.json".format(file_in)
     data = []
